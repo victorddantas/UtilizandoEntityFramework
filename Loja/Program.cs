@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,8 @@ namespace Loja
         static void Main(string[] args)
         {
             //GravarUsandoAdoNet();
-            GravarUsandoEntity();
+            //GravarUsandoEntity();
+            //ListarUsandoAdoNet();
         }
 
         private static void GravarUsandoEntity()
@@ -42,6 +44,27 @@ namespace Loja
             {
                 repo.Adicionar(p);
             }
+        }
+
+        //exemplo de utilização do ADO.NET para Listar dados na tabela  
+        private static IList<Produto> ListarUsandoAdoNet()
+        {
+            ProdutoDAO produto = new ProdutoDAO();
+
+           var p =  produto.Produtos();
+           
+            foreach (var item in p)
+            {
+
+                Console.WriteLine(item.Nome);
+                Console.WriteLine(item.Preco);
+                Console.WriteLine(item.Categoria + "\n");
+               
+            }
+
+            Console.ReadLine();
+            return p;
+           
         }
     }
 }
