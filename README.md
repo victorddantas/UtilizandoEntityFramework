@@ -1,1 +1,1 @@
-# Exemo básico de utilização do Entity framework 
+# Exemplo básico de utilização do Entity framework 
