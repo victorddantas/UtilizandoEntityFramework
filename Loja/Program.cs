@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,14 @@ namespace Loja
     {
         static void Main(string[] args)
         {
-            //GravarUsandoAdoNet();
-            //GravarUsandoEntity();
+            //GravarUsandoAdoNet();       
             //ListarUsandoAdoNet();
+            //DeletarUsandoAdoNet();
+
+            //GravarUsandoEntity();
         }
 
+        //exemplo de utilização do Entity para salvar dados na tabela  
         private static void GravarUsandoEntity()
         {
             Produto p = new Produto();
@@ -66,6 +70,23 @@ namespace Loja
             return p;
            
         }
+
+        //exemplo de utilização do ADO.NET para Deletar dados na tabela  
+        private static void DeletarUsandoAdoNet()
+        {
+          
+
+            Produto p = new Produto();
+            p.Id = 1;
+            
+
+            using (var repo = new ProdutoDAO())
+            {
+                repo.Remover(p);
+            }
+
+        }
+
     }
 }
 
