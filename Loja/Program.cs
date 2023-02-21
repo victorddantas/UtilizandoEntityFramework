@@ -15,11 +15,13 @@ namespace Loja
             //GravarUsandoAdoNet();       
             //ListarUsandoAdoNet();
             //DeletarUsandoAdoNet();
+            //AtualizarUsandoAdoNet();
 
             //GravarUsandoEntity();
         }
 
         //exemplo de utilização do Entity para salvar dados na tabela  
+        #region Métodos no Entity framework
         private static void GravarUsandoEntity()
         {
             Produto p = new Produto();
@@ -34,7 +36,11 @@ namespace Loja
                 contexto.SaveChanges();
             }
         }
+        
+        #endregion
 
+
+        #region Métodos em ADO.NET
 
         //exemplo de utilização do ADO.NET para salvar dados na tabela  
         private static void GravarUsandoAdoNet()
@@ -87,6 +93,21 @@ namespace Loja
 
         }
 
+        private static void AtualizarUsandoAdoNet()
+        {
+            Produto p = new Produto();
+            p.Id = 2;
+            p.Nome = "Admirável mundo novo";
+            p.Categoria = "Livros";
+            p.Preco = 22.50;
+
+            using (var repo = new ProdutoDAO())
+            {
+                repo.Atualizar(p);
+            }
+        }
+
+        #endregion
     }
 }
 
