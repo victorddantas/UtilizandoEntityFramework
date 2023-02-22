@@ -23,11 +23,10 @@ namespace Loja
             //DeletarUsandoEntity();
             //AtualizarUsandoEntity();
 
-            exemploChangeTracker();
+            //exemploChangeTracker();
 
 
         }
-
      
         #region Métodos no Entity framework
 
@@ -168,7 +167,6 @@ namespace Loja
 
         #endregion
 
-
         #region Como o entity persiste os objetos do banco 
 
         private static void exemploChangeTracker()
@@ -209,6 +207,8 @@ namespace Loja
 
                 }
 
+                //Assim que é feito o select no banco (método toList), o contexto armazenou uma entidade para cada registro que obteve do banco 
+                //E assim atribui o estado para cada entidade( se não há  alteração "unchanged" se há "Modified").
 
                 Console.ReadLine();
             }
