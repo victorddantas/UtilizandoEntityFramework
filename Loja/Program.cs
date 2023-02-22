@@ -18,10 +18,31 @@ namespace Loja
             //AtualizarUsandoAdoNet();
 
             //GravarUsandoEntity();
+            //ListarUsandoEntity();
+
         }
 
+
+
         //exemplo de utilização do Entity para salvar dados na tabela  
+
         #region Métodos no Entity framework
+        private static void ListarUsandoEntity()
+        {
+            using (var repo = new LojaContext())
+            {
+                IList<Produto> p = repo.Produtos.ToList();  //Convertendo a propiedade dbset do tipo produto em uma lista 
+
+                foreach (var item in p) //Iterando a lista para mostrar os dados obtidos 
+                {
+                    Console.WriteLine(item.Nome);
+                    Console.WriteLine(item.Preco);
+                    Console.WriteLine(item.Categoria + "\n");
+                }
+
+                Console.ReadLine();
+            }
+        }
         private static void GravarUsandoEntity()
         {
             Produto p = new Produto();
@@ -38,7 +59,6 @@ namespace Loja
         }
         
         #endregion
-
 
         #region Métodos em ADO.NET
 
