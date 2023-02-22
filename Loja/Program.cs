@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -173,6 +176,15 @@ namespace Loja
         {
             using (var contexto = new LojaContext())
             {
+                # region log para visualizar os comandos realizados pelo entity framework
+
+                var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create()); //no loggerFactory será colocado um log especifico do entity e vai colocá-lo aqui 
+
+                #endregion
+
+
                 var produtos = contexto.Produtos.ToList();
                 foreach (var item in produtos)
                 {
@@ -192,7 +204,7 @@ namespace Loja
                 produtos = contexto.Produtos.ToList();
                 foreach (var item in produtos)
                 {
-                    Console.WriteLine(item);                              
+                    Console.WriteLine(item);
                 }
 
 
@@ -208,7 +220,10 @@ namespace Loja
                 }
 
                 //Assim que é feito o select no banco (método toList), o contexto armazenou uma entidade para cada registro que obteve do banco 
-                //E assim atribui o estado para cada entidade( se não há  alteração "unchanged" se há "Modified").
+                //E assim atribuí o estado para cada entidade( se não há  alteração "unchanged" se há "Modified"). 
+
+
+               
 
                 Console.ReadLine();
             }
