@@ -1,1 +1,1 @@
-# Exemplo básico de utilização do Entity framework 
+# Exemplo básico de utilização do Entity framework comparando com ADO.NET
