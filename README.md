@@ -1,1 +1,1 @@
-# Exemplo básico de utilização do Entity framework comparando com ADO.NET
+# Crud básico de exemplo de utilização do Entity framework, comparando com os métodos em ADO.NET.
