@@ -9,34 +9,40 @@ namespace Loja
 {
     public class ProdutoDAOEntity : IProdutoDAO, IDisposable
     {
-        private SqlConnection conexao;
+        //através do context fazemos acesso ao objeto Produto utilizando a abordagem do entity framework, 
+
+        private LojaContext contexto; //criando campo para representar o contexto do entity para utilizar o método do entity 
+
         public ProdutoDAOEntity()
         {
-            this.conexao = new SqlConnection("Server=(localdb)\\mssqllocaldb;Database=LojaDB;Trusted_Connection=true;");
-            this.conexao.Open();
+           this.contexto = new LojaContext(); //estânciando LojaContext para evitar o erro de referência nula no campo contexto
         }
         public void Dispose()
         {
-            this.conexao.Close();
+            contexto.Dispose(); 
         }
         public void Adicionar(Produto produto)
         {
-            throw new NotImplementedException();
+            contexto.Produtos.Add(produto); //método para adicionar produtos 
+            contexto.SaveChanges(); //salvando alterações 
         }
 
         public void Atualizar(Produto produto)
         {
-            throw new NotImplementedException();
+            contexto.Produtos.Update(produto);//método para atualizar produtos 
+            contexto.SaveChanges();
         }
 
         public IList<Produto> Produtos()
         {
-            throw new NotImplementedException();
+            return contexto.Produtos.ToList();
         }
 
         public void Remover(Produto produto)
         {
-            throw new NotImplementedException();
+            contexto.Produtos.Remove(produto);
+            contexto.SaveChanges();
+
         }
     }
 }
