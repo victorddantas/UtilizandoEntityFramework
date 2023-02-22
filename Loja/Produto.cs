@@ -17,7 +17,7 @@ namespace Loja
         //sobrescrevendo o método ToString para ele exibir o dado contido na instacia de produto (nesse caso o nome).
         public override string ToString()
         {
-            return "Produto: " + this.Nome;
+            return $"ID: {this.Id}, Produto: {this.Nome}, Categoria: {this.Categoria}, Preço: {this.Preco}";
         }
 
     }

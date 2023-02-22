@@ -26,7 +26,7 @@ namespace Loja
             //DeletarUsandoEntity();
             //AtualizarUsandoEntity();
 
-            //exemploChangeTracker();
+            exemploChangeTracker();
 
 
         }
@@ -186,9 +186,11 @@ namespace Loja
 
 
                 var produtos = contexto.Produtos.ToList();
+
+                Console.WriteLine("======= Lista de produtos =======");
                 foreach (var item in produtos)
                 {
-                    Console.WriteLine(item); //nesse caso o WriteLine irá  chamar o método ToString() que irá trazer o a referÇEcia do objeto.
+                    Console.WriteLine(item); //nesse caso o WriteLine irá  chamar o método ToString() que irá trazer o a referência do objeto.
                                              //para ele trazer o dados contidos devemos sobrescrever o método ToString() na classe Produto
                 }
 
@@ -196,36 +198,70 @@ namespace Loja
                 //Um exemplo disso é se alterarmos os dados contidos na tabela apenas reatibuindo o valor em uma nova variável, alterando apenas a propriedade
 
                 var produto1 = produtos.First();
-                produto1.Nome = "Admirável mundo novo";
-
-                contexto.SaveChanges();
-
-                //reexibindo alteração realizada     
-                produtos = contexto.Produtos.ToList();
-                foreach (var item in produtos)
-                {
-                    Console.WriteLine(item);
-                }
+                produto1.Nome = "A arte da guerra";
 
 
                 //A classe LojaContext herda de dbContext. Essa por sua  vez possue o ChangeTracker que possue uma lista de todas as entidades 
-                //que está sendo gerenciadas pelo contexto em questão. Nesse caso podemos utlizar o método Entries() para recuperar essa lista 
+                //que está sendo gerenciadas pelo contexto em questão. Nesse caso podemos utlizar o método Entries() (dentro do método criado exibeEntries) para recuperar essa lista 
                 //e iterar através dela para vizualizar as classes de cada entidade, ou utilizando o atributo state do Entries, os estados de cada entidade 
                 //Com isso podemos observar como o entity consegue observar os estados e realizar a alteração 
 
-                foreach (var item in contexto.ChangeTracker.Entries())
-                {
-                    Console.WriteLine(item.State);
+                exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
 
-                }
+
+                contexto.SaveChanges();//salvando alterações
+
+
+                exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
+
 
                 //Assim que é feito o select no banco (método toList), o contexto armazenou uma entidade para cada registro que obteve do banco 
                 //E assim atribuí o estado para cada entidade( se não há  alteração "unchanged" se há "Modified"). 
 
 
-               
+
+                //para o caso de inserir um novo produto no banco, o estado exbido é o Added
+
+
+                var produto2 = new Produto()
+                {
+                    Nome = "O Príncipe",
+                    Categoria = "livros",
+                    Preco = 41.50
+                };
+
+                contexto.Produtos.Add(produto2);
+
+
+                exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
+
+
+                contexto.SaveChanges();//salvando alterações
+
+
+                exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
+
+
+
+
+
+
 
                 Console.ReadLine();
+            }
+
+
+
+
+        }
+
+        private static void exibeEntries(IEnumerable<EntityEntry> entries)
+        {
+            Console.WriteLine("\n======= Entries =======");
+            foreach (var item in entries)
+            {
+                Console.WriteLine(item.Entity.ToString() + " - " + item.State);
+
             }
         }
 
