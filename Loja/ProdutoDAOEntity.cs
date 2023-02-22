@@ -26,18 +26,15 @@ namespace Loja
             contexto.Produtos.Add(produto); //método para adicionar produtos 
             contexto.SaveChanges(); //salvando alterações 
         }
-
         public void Atualizar(Produto produto)
         {
             contexto.Produtos.Update(produto);//método para atualizar produtos 
             contexto.SaveChanges();
         }
-
         public IList<Produto> Produtos()
         {
             return contexto.Produtos.ToList();
         }
-
         public void Remover(Produto produto)
         {
             contexto.Produtos.Remove(produto);

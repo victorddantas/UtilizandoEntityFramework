@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,8 +22,13 @@ namespace Loja
             //ListarUsandoEntity();
             //DeletarUsandoEntity();
             //AtualizarUsandoEntity();
+
+            exemploChangeTracker();
+
+
         }
 
+     
         #region Métodos no Entity framework
 
         //exemplo de utilização do Entity para Listar dados na tabela  
@@ -31,7 +37,7 @@ namespace Loja
             using (var repo = new ProdutoDAOEntity())
             {
                 IList<Produto> p = repo.Produtos();  //Convertendo a propiedade dbset do tipo produto em uma lista 
-                Console.WriteLine("Foram encontrados {0} produto(s).", p.Count());
+                Console.WriteLine("Foram encontrados {0} produto(s).\n", p.Count());
                 foreach (var item in p) //Iterando a lista para mostrar os dados obtidos 
                 {
                     Console.WriteLine(item.Nome);
@@ -159,6 +165,55 @@ namespace Loja
                 repo.Atualizar(p);
             }
         }
+
+        #endregion
+
+
+        #region Como o entity persiste os objetos do banco 
+
+        private static void exemploChangeTracker()
+        {
+            using (var contexto = new LojaContext())
+            {
+                var produtos = contexto.Produtos.ToList();
+                foreach (var item in produtos)
+                {
+                    Console.WriteLine(item); //nesse caso o WriteLine irá  chamar o método ToString() que irá trazer o a referÇEcia do objeto.
+                                             //para ele trazer o dados contidos devemos sobrescrever o método ToString() na classe Produto
+                }
+
+                //O entity consegue gravar os estados e executar os comados de acordo com esses estados 
+                //Um exemplo disso é se alterarmos os dados contidos na tabela apenas reatibuindo o valor em uma nova variável, alterando apenas a propriedade
+
+                var produto1 = produtos.First();
+                produto1.Nome = "Admirável mundo novo";
+
+                contexto.SaveChanges();
+
+                //reexibindo alteração realizada     
+                produtos = contexto.Produtos.ToList();
+                foreach (var item in produtos)
+                {
+                    Console.WriteLine(item);                              
+                }
+
+
+                //A classe LojaContext herda de dbContext. Essa por sua  vez possue o ChangeTracker que possue uma lista de todas as entidades 
+                //que está sendo gerenciadas pelo contexto em questão. Nesse caso podemos utlizar o método Entries() para recuperar essa lista 
+                //e iterar através dela para vizualizar as classes de cada entidade, ou utilizando o atributo state do Entries, os estados de cada entidade 
+                //Com isso podemos observar como o entity consegue observar os estados e realizar a alteração 
+
+                foreach (var item in contexto.ChangeTracker.Entries())
+                {
+                    Console.WriteLine(item.State);
+
+                }
+
+
+                Console.ReadLine();
+            }
+        }
+
 
         #endregion
     }

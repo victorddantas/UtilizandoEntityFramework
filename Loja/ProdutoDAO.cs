@@ -16,12 +16,10 @@ namespace Loja
             this.conexao = new SqlConnection("Server=(localdb)\\mssqllocaldb;Database=LojaDB;Trusted_Connection=true;");
             this.conexao.Open();
         }
-
         public void Dispose()
         {
             this.conexao.Close();
         }
-
         public void Adicionar(Produto p)
         {
             try
@@ -45,7 +43,6 @@ namespace Loja
                 throw new SystemException(e.Message, e);
             }
         }
-
         public void Atualizar(Produto p)
         {
             try
@@ -70,7 +67,6 @@ namespace Loja
                 throw new SystemException(e.Message, e);
             }
         }
-
         public void Remover(Produto p)
         {
             try
@@ -89,7 +85,6 @@ namespace Loja
                 throw new SystemException(e.Message, e);
             }
         }
-
         public IList<Produto> Produtos()
         {
             var lista = new List<Produto>();
