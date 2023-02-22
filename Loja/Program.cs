@@ -19,20 +19,24 @@ namespace Loja
 
             //GravarUsandoEntity();
             //ListarUsandoEntity();
+            //RemoverUsandoEntity();
 
         }
 
 
 
-        //exemplo de utilização do Entity para salvar dados na tabela  
+
+
 
         #region Métodos no Entity framework
+
+        //exemplo de utilização do Entity para Listar dados na tabela  
         private static void ListarUsandoEntity()
         {
             using (var repo = new LojaContext())
             {
                 IList<Produto> p = repo.Produtos.ToList();  //Convertendo a propiedade dbset do tipo produto em uma lista 
-
+                Console.WriteLine("Foram encontrados {0} produto(s).", p.Count());
                 foreach (var item in p) //Iterando a lista para mostrar os dados obtidos 
                 {
                     Console.WriteLine(item.Nome);
@@ -43,6 +47,8 @@ namespace Loja
                 Console.ReadLine();
             }
         }
+       
+        //exemplo de utilização do Entity para salvar dados na tabela  
         private static void GravarUsandoEntity()
         {
             Produto p = new Produto();
@@ -57,7 +63,22 @@ namespace Loja
                 contexto.SaveChanges();
             }
         }
-        
+
+        //exemplo de utilização do Entity para deletar dados na tabela  
+        private static void RemoverUsandoEntity()
+        {
+            using (var repo = new LojaContext())
+            {
+                IList<Produto> p = repo.Produtos.ToList(); //criando uma lista de produtos  para excluir
+
+                foreach (var item in p)
+                {
+                   // repo.Remove(item);  //removendo os itens
+                }
+                repo.SaveChanges();// o save deve ser executado após os todos serem removidos 
+                ListarUsandoEntity();
+            }
+        }
         #endregion
 
         #region Métodos em ADO.NET
