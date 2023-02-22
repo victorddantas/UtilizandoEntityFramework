@@ -23,15 +23,14 @@ namespace Loja
             //AtualizarUsandoEntity();
         }
 
-
         #region Métodos no Entity framework
 
         //exemplo de utilização do Entity para Listar dados na tabela  
         private static void ListarUsandoEntity()
         {
-            using (var repo = new LojaContext())
+            using (var repo = new ProdutoDAOEntity())
             {
-                IList<Produto> p = repo.Produtos.ToList();  //Convertendo a propiedade dbset do tipo produto em uma lista 
+                IList<Produto> p = repo.Produtos();  //Convertendo a propiedade dbset do tipo produto em uma lista 
                 Console.WriteLine("Foram encontrados {0} produto(s).", p.Count());
                 foreach (var item in p) //Iterando a lista para mostrar os dados obtidos 
                 {
@@ -53,25 +52,23 @@ namespace Loja
             p.Preco = 19.89;
 
             //Ao invés de se utilizar um DAO para cada classe, utlizamos o Context para persistir todas as classes do Projeto
-            using (var contexto = new LojaContext())
+            using (var contexto = new ProdutoDAOEntity())
             {
-                contexto.Produtos.Add(p);
-                contexto.SaveChanges();
+                contexto.Adicionar(p);
             }
         }
 
         //exemplo de utilização do Entity para deletar dados na tabela  
         private static void DeletarUsandoEntity()
         {
-            using (var repo = new LojaContext())
+            using (var repo = new ProdutoDAOEntity())
             {
-                IList<Produto> p = repo.Produtos.ToList(); //criando uma lista de produtos  para excluir
+                IList<Produto> p = repo.Produtos(); //criando uma lista de produtos  para excluir
 
                 foreach (var item in p)
                 {
-                   repo.Remove(item);  //removendo os itens
+                   repo.Remover(item);  //removendo os itens
                 }
-                repo.SaveChanges();// o save deve ser executado após os todos serem removidos 
                 ListarUsandoEntity();
             }
         }
@@ -79,7 +76,7 @@ namespace Loja
         //exemplo de utilização do Entity para atualizar dados na tabela  
         private static void AtualizarUsandoEntity()
         {
-            using (var repo = new LojaContext())
+            using (var repo = new ProdutoDAOEntity())
             {
 
                 Produto p = new Produto(); //informando o produto que será atualizado 
@@ -89,8 +86,7 @@ namespace Loja
                 p.Preco = 25.50;
 
                 
-                repo.Produtos.Update(p);
-                repo.SaveChanges();
+                repo.Atualizar(p); //método de atualização
                 ListarUsandoEntity();
             }
         }
