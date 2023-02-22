@@ -19,13 +19,9 @@ namespace Loja
 
             //GravarUsandoEntity();
             //ListarUsandoEntity();
-            //RemoverUsandoEntity();
-
+            //DeletarUsandoEntity();
+            //AtualizarUsandoEntity();
         }
-
-
-
-
 
 
         #region Métodos no Entity framework
@@ -65,7 +61,7 @@ namespace Loja
         }
 
         //exemplo de utilização do Entity para deletar dados na tabela  
-        private static void RemoverUsandoEntity()
+        private static void DeletarUsandoEntity()
         {
             using (var repo = new LojaContext())
             {
@@ -73,12 +69,32 @@ namespace Loja
 
                 foreach (var item in p)
                 {
-                   // repo.Remove(item);  //removendo os itens
+                   repo.Remove(item);  //removendo os itens
                 }
                 repo.SaveChanges();// o save deve ser executado após os todos serem removidos 
                 ListarUsandoEntity();
             }
         }
+
+        //exemplo de utilização do Entity para atualizar dados na tabela  
+        private static void AtualizarUsandoEntity()
+        {
+            using (var repo = new LojaContext())
+            {
+
+                Produto p = new Produto(); //informando o produto que será atualizado 
+                p.Id = 1003;
+                p.Nome = "A arte da Guerra";
+                p.Categoria = "Livros";
+                p.Preco = 25.50;
+
+                
+                repo.Produtos.Update(p);
+                repo.SaveChanges();
+                ListarUsandoEntity();
+            }
+        }
+
         #endregion
 
         #region Métodos em ADO.NET
