@@ -12,15 +12,22 @@ namespace Loja
         public string Nome { get; internal set; }
         public string Categoria { get; internal set; }
 
-        //Essas duas propriedades abaixo foram alteradas e criadas após a criação do banco. Para atualizar sem a necessidade de se manipualar
-        //diretamente o banco (alter table), podemos utilizar o migrations, para sincronizar os dados entre o banco e a aplicação (objetos) . Essa funcionalidade 
-        //está contida no pacote Microsoft.EntityFrameworkCore.Tools. 
-        //Essa sincronizaão é feita através de duas etapas, através de comandos. Primeiro é feito adicionar a migração, criando assim uma nova versão para
-        //ser sincronozada com o banco (add-migration), depois é executado ou com um script criado previamente (script-migration), ou com o update-database
-        //executando diretamente a partir da versão mais recente criada. 
-        //Após isso é criada a pasta Migrations contendo a classes de migrações. A classe que possue o nome da migração que foi criada, emseu nome possue
-        //o nome e data de sua criação, e dentro dessa classe há dois métodos, uma para subir a nova versão e outro para retornar para uma versão anterior.
-        //Essa classe herda da classe Migration, que fornece uma API para executar a sincronização).
+        ////Essas duas propriedades abaixo foram alteradas e criadas após a criação do banco. Para atualizar sem a necessidade de se manipualar
+        ////diretamente o banco (alter table), podemos utilizar o migrations, para sincronizar os dados entre o banco e a aplicação (objetos) . Essa funcionalidade 
+        ////está contida no pacote Microsoft.EntityFrameworkCore.Tools. 
+        ////Essa sincronizaão é feita através de duas etapas, através de comandos. Primeiro é feito adicionar a migração, criando assim uma nova versão para
+        ////ser sincronozada com o banco (add-migration), depois é executado ou com um script criado previamente (script-migration), ou com o update-database
+        ////executando diretamente a partir da versão mais recente criada. 
+        ////Após isso é criada a pasta Migrations contendo a classes de migrações. A classe que possue o nome da migração que foi criada, emseu nome possue
+        ////o nome e data de sua criação, e dentro dessa classe há dois métodos, uma para subir a nova versão e outro para retornar para uma versão anterior.
+        ////Essa classe herda da classe Migration, que fornece uma API para executar a sincronização).
+        ////Primeiro é necessário criar a migração inicial, como forma de versionar o estado atual da aplicação em relação ao banco de dados, após
+        ////isso se cria a migração com as atualizações.
+        ////Ao executar uma migração ele sempre irá utlizar como referência a tabela de histórico criada no banco quando é executada uma migração.
+        ////Como não foi criada nenhuma a primeira migração, seria a migração inicial, todavia, a migração inicial dará erro pois ela está tentando criar 
+        ////uma tabela que já existe. Para burlar isso podemos comentar o código da migração inicial, de forma que ele sirva apenas para registrar
+        ////a execução nessa tabela de histórico, para que assim possamos executar a migração com as atualizações, essa que assim será a última 
+        ////migração disponível para atualização. 
 
         public double PrecoUnitario { get; internal set; }
         public string Unidade { get; internal set; }

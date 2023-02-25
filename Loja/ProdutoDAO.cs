@@ -25,7 +25,7 @@ namespace Loja
             try
             {
                 var insertCmd = conexao.CreateCommand();
-                insertCmd.CommandText = "INSERT INTO Produtos (Nome, Categoria, Preco) VALUES (@nome, @categoria, @preco)";
+                insertCmd.CommandText = "INSERT INTO Produtos (Nome, Categoria, PrecoUnitario) VALUES (@nome, @categoria, @PrecoUnitario)";
 
                 var paramNome = new SqlParameter("nome", p.Nome);
                 insertCmd.Parameters.Add(paramNome);
@@ -33,8 +33,8 @@ namespace Loja
                 var paramCategoria = new SqlParameter("categoria", p.Categoria);
                 insertCmd.Parameters.Add(paramCategoria);
 
-                var paramPreco = new SqlParameter("preco", p.PrecoUnitario);
-                insertCmd.Parameters.Add(paramPreco);
+                var paramPrecoUnitario = new SqlParameter("PrecoUnitario", p.PrecoUnitario);
+                insertCmd.Parameters.Add(paramPrecoUnitario);
 
                 insertCmd.ExecuteNonQuery();
             }
@@ -48,15 +48,15 @@ namespace Loja
             try
             {
                 var updateCmd = conexao.CreateCommand();
-                updateCmd.CommandText = "UPDATE Produtos SET Nome = @nome, Categoria = @categoria, Preco = @preco WHERE Id = @id";
+                updateCmd.CommandText = "UPDATE Produtos SET Nome = @nome, Categoria = @categoria, PrecoUnitario = @PrecoUnitario WHERE Id = @id";
 
                 var paramNome = new SqlParameter("nome", p.Nome);
                 var paramCategoria = new SqlParameter("categoria", p.Categoria);
-                var paramPreco = new SqlParameter("preco", p.PrecoUnitario);
+                var paramPrecoUnitario = new SqlParameter("PrecoUnitario", p.PrecoUnitario);
                 var paramId = new SqlParameter("id", p.Id);
                 updateCmd.Parameters.Add(paramNome);
                 updateCmd.Parameters.Add(paramCategoria);
-                updateCmd.Parameters.Add(paramPreco);
+                updateCmd.Parameters.Add(paramPrecoUnitario);
                 updateCmd.Parameters.Add(paramId);
 
                 updateCmd.ExecuteNonQuery();
@@ -99,7 +99,7 @@ namespace Loja
                 p.Id = Convert.ToInt32(resultado["Id"]);
                 p.Nome = Convert.ToString(resultado["Nome"]);
                 p.Categoria = Convert.ToString(resultado["Categoria"]);
-                p.PrecoUnitario = Convert.ToDouble(resultado["Preco"]);
+                p.PrecoUnitario = Convert.ToDouble(resultado["PrecoUnitario"]);
                 lista.Add(p);
             }
             resultado.Close();

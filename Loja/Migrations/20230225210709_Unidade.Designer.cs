@@ -8,7 +8,7 @@ using Loja;
 namespace Loja.Migrations
 {
     [DbContext(typeof(LojaContext))]
-    [Migration("20230225203625_Unidade")]
+    [Migration("20230225210709_Unidade")]
     partial class Unidade
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
