@@ -33,7 +33,7 @@ namespace Loja
                 var paramCategoria = new SqlParameter("categoria", p.Categoria);
                 insertCmd.Parameters.Add(paramCategoria);
 
-                var paramPreco = new SqlParameter("preco", p.Preco);
+                var paramPreco = new SqlParameter("preco", p.PrecoUnitario);
                 insertCmd.Parameters.Add(paramPreco);
 
                 insertCmd.ExecuteNonQuery();
@@ -52,7 +52,7 @@ namespace Loja
 
                 var paramNome = new SqlParameter("nome", p.Nome);
                 var paramCategoria = new SqlParameter("categoria", p.Categoria);
-                var paramPreco = new SqlParameter("preco", p.Preco);
+                var paramPreco = new SqlParameter("preco", p.PrecoUnitario);
                 var paramId = new SqlParameter("id", p.Id);
                 updateCmd.Parameters.Add(paramNome);
                 updateCmd.Parameters.Add(paramCategoria);
@@ -99,7 +99,7 @@ namespace Loja
                 p.Id = Convert.ToInt32(resultado["Id"]);
                 p.Nome = Convert.ToString(resultado["Nome"]);
                 p.Categoria = Convert.ToString(resultado["Categoria"]);
-                p.Preco = Convert.ToDouble(resultado["Preco"]);
+                p.PrecoUnitario = Convert.ToDouble(resultado["Preco"]);
                 lista.Add(p);
             }
             resultado.Close();

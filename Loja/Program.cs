@@ -26,7 +26,10 @@ namespace Loja
             //DeletarUsandoEntity();
             //AtualizarUsandoEntity();
 
-            exemploChangeTracker();
+            //exemploChangeTracker();
+
+
+
 
 
         }
@@ -43,7 +46,7 @@ namespace Loja
                 foreach (var item in p) //Iterando a lista para mostrar os dados obtidos 
                 {
                     Console.WriteLine(item.Nome);
-                    Console.WriteLine(item.Preco);
+                    Console.WriteLine(item.PrecoUnitario);
                     Console.WriteLine(item.Categoria + "\n");
                 }
 
@@ -57,7 +60,7 @@ namespace Loja
             Produto p = new Produto();
             p.Nome = "Harry Potter e a Ordem da Fênix";
             p.Categoria = "Livros";
-            p.Preco = 19.89;
+            p.PrecoUnitario = 19.89;
 
             //Ao invés de se utilizar um DAO para cada classe, utlizamos o Context para persistir todas as classes do Projeto
             using (var contexto = new ProdutoDAOEntity())
@@ -91,7 +94,7 @@ namespace Loja
                 p.Id = 1003;
                 p.Nome = "A arte da Guerra";
                 p.Categoria = "Livros";
-                p.Preco = 25.50;
+                p.PrecoUnitario = 25.50;
 
                 
                 repo.Atualizar(p); //método de atualização
@@ -109,7 +112,7 @@ namespace Loja
             Produto p = new Produto();
             p.Nome = "Harry Potter e a Ordem da Fênix";
             p.Categoria = "Livros";
-            p.Preco = 19.89;
+            p.PrecoUnitario = 19.89;
 
             using (var repo = new ProdutoDAO())
             {
@@ -128,7 +131,7 @@ namespace Loja
             {
 
                 Console.WriteLine(item.Nome);
-                Console.WriteLine(item.Preco);
+                Console.WriteLine(item.PrecoUnitario);
                 Console.WriteLine(item.Categoria + "\n");
                
             }
@@ -160,7 +163,7 @@ namespace Loja
             p.Id = 2;
             p.Nome = "Admirável mundo novo";
             p.Categoria = "Livros";
-            p.Preco = 22.50;
+            p.PrecoUnitario = 22.50;
 
             using (var repo = new ProdutoDAO())
             {
@@ -235,7 +238,7 @@ namespace Loja
                 //{
                 //    Nome = "O Príncipe",
                 //    Categoria = "livros",
-                //    Preco = 41.50
+                //    PrecoUnitario = 41.50
                 //};
 
                 //contexto.Produtos.Add(produto2);
@@ -274,7 +277,7 @@ namespace Loja
                 {
                     Nome = "A arte da guerra",
                     Categoria = "Livros",
-                    Preco = 40.80,
+                    PrecoUnitario = 40.80,
                 };
             
                 contexto.Produtos.Add(p2);
