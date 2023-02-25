@@ -170,7 +170,7 @@ namespace Loja
 
         #endregion
 
-        #region Como o entity persiste os objetos do banco 
+        #region Como o entity persiste os objetos do banco - Monitoramento de mudança dos estados dos objetos gerenciados pelo entity
 
         private static void exemploChangeTracker()
         {
@@ -184,6 +184,7 @@ namespace Loja
 
                 #endregion
 
+                #region LISTANDO PRODUTOS PARA EXBIÇÃO DOS ESTADOS 
 
                 var produtos = contexto.Produtos.ToList();
 
@@ -194,64 +195,112 @@ namespace Loja
                                              //para ele trazer o dados contidos devemos sobrescrever o método ToString() na classe Produto
                 }
 
-                //O entity consegue gravar os estados e executar os comados de acordo com esses estados 
+                #endregion
+
+                #region EXEMPLO DE ESTADO DE GRAVAÇÃO AO ALTERAR O VALOR DE UMA PROPRIEDADE (ATUALIZAR)
+
+                //O entity consegue GRAVAR os estados e executar os comados de acordo com esses estados 
                 //Um exemplo disso é se alterarmos os dados contidos na tabela apenas reatibuindo o valor em uma nova variável, alterando apenas a propriedade
 
-                var produto1 = produtos.First();
-                produto1.Nome = "A arte da guerra";
+                //var produto1 = produtos.First();
+                //produto1.Nome = "A arte da guerra";
 
 
-                //A classe LojaContext herda de dbContext. Essa por sua  vez possue o ChangeTracker que possue uma lista de todas as entidades 
+                //A classe LojaContext herda de dbContext. Essa por sua
+                //vez possue o ChangeTracker que possue uma lista de todas as entidades 
                 //que está sendo gerenciadas pelo contexto em questão. Nesse caso podemos utlizar o método Entries() (dentro do método criado exibeEntries) para recuperar essa lista 
                 //e iterar através dela para vizualizar as classes de cada entidade, ou utilizando o atributo state do Entries, os estados de cada entidade 
                 //Com isso podemos observar como o entity consegue observar os estados e realizar a alteração 
 
-                exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
+                //exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
 
 
-                contexto.SaveChanges();//salvando alterações
+                //contexto.SaveChanges();//salvando alterações
 
 
-                exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
+                //exibeEntries(contexto.ChangeTracker.Entries());//exibindo os estados 
+
 
 
                 //Assim que é feito o select no banco (método toList), o contexto armazenou uma entidade para cada registro que obteve do banco 
                 //E assim atribuí o estado para cada entidade( se não há  alteração "unchanged" se há "Modified"). 
 
+                #endregion
+
+                #region EXEMPLO DE ESTADO DE GRAVAÇÃO AO INSERIR
+                //para o caso de INSERIR um novo produto no banco, o estado exbido é o Added
 
 
-                //para o caso de inserir um novo produto no banco, o estado exbido é o Added
+                //var produto2 = new Produto()
+                //{
+                //    Nome = "O Príncipe",
+                //    Categoria = "livros",
+                //    Preco = 41.50
+                //};
+
+                //contexto.Produtos.Add(produto2);
 
 
-                var produto2 = new Produto()
+                //exibeEntries(contexto.ChangeTracker.Entries());//exibindo os estados 
+
+
+                //contexto.SaveChanges();//salvando alterações
+
+
+                // exibeEntries(contexto.ChangeTracker.Entries());//exibindo os estados 
+
+                #endregion
+
+                #region EXEMPLO DE ESTADO DE GRAVAÇÃO AO REMOVER
+                //para o caso de REMOVER um novo produto no banco, o estado exbido é o Deleted
+
+                //var p1 = produtos.Last();
+                //contexto.Produtos.Remove(p1);
+
+                //exibeEntries(contexto.ChangeTracker.Entries());//exibindo os estados 
+
+                //contexto.SaveChanges();//salvando alterações
+
+                //exibeEntries(contexto.ChangeTracker.Entries());//exibindo os estados 
+
+                //Console.ReadLine();
+
+                #endregion
+
+                #region EXEMPLO DE ESTADO DE GRAVAÇÃO AO INSERIR E REMOVER EM SEGUIDA 
+
+                //para o caso de INSERIR E REMOVER EM SEGUIDA esse mesmo produto no banco, o estado exbido é o Detached 
+                Produto p2 = new Produto()
                 {
-                    Nome = "O Príncipe",
-                    Categoria = "livros",
-                    Preco = 41.50
+                    Nome = "A arte da guerra",
+                    Categoria = "Livros",
+                    Preco = 40.80,
                 };
+            
+                contexto.Produtos.Add(p2);
 
-                contexto.Produtos.Add(produto2);
+                exibeEntries(contexto.ChangeTracker.Entries());//exibindo os estados 
 
+                contexto.Produtos.Remove(p2);
 
-                exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
+                exibeEntries(contexto.ChangeTracker.Entries());//exibindo os estados 
 
+                //contexto.SaveChanges();//salvando alterações
 
-                contexto.SaveChanges();//salvando alterações
+                //Para visualizar esse estado, precisamos verificar o estado do objeto que está sendo inserido e deletado através de sua referência, pois os mesmo é 
+                //removido da lista de monitoramento do ChangeTracker
+                //Objetos ao serem excluídos já são movidos para esse estado (Detached)
 
-
-                exibeEntries(contexto.ChangeTracker.Entries());//exbindo os estados 
-
-
-
-
+                var entry = contexto.Entry(p2); //o Entry é uma estância de um objeto do tipo EntityEntry
+                Console.WriteLine("\n======= Estado dos objetos não monitorados =======");
+                Console.WriteLine(entry.Entity.ToString() + " - " + entry.State); //exibindo os produtos e seu estado 
 
 
 
                 Console.ReadLine();
+
+                #endregion
             }
-
-
-
 
         }
 
