@@ -1,4 +1,5 @@
 ﻿using Loja.Migrations;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -30,11 +31,11 @@ namespace Loja
             //exemploChangeTracker();
             //compraDeProdutos();
             //cadastrandoPromocoes();
-            cadastrandoClienteEndereco();
-
+            //cadastrandoClienteEndereco();
+            //adicionandoProdutosEspecificos();
+            //realizandoConsultaDeEntidadesRelacionadas();
         }
 
-       
         #region Métodos no Entity framework
 
         //exemplo de utilização do Entity para Listar dados na tabela  
@@ -54,7 +55,7 @@ namespace Loja
                 Console.ReadLine();
             }
         }
-       
+
         //exemplo de utilização do Entity para salvar dados na tabela  
         private static void GravarUsandoEntity()
         {
@@ -79,7 +80,7 @@ namespace Loja
 
                 foreach (var item in p)
                 {
-                   repo.Remover(item);  //removendo os itens
+                    repo.Remover(item);  //removendo os itens
                 }
                 ListarUsandoEntity();
             }
@@ -97,7 +98,7 @@ namespace Loja
                 p.Categoria = "Livros";
                 p.PrecoUnitario = 25.50;
 
-                
+
                 repo.Atualizar(p); //método de atualização
                 ListarUsandoEntity();
             }
@@ -126,30 +127,30 @@ namespace Loja
         {
             ProdutoDAO produto = new ProdutoDAO();
 
-           var p =  produto.Produtos();
-           
+            var p = produto.Produtos();
+
             foreach (var item in p)
             {
 
                 Console.WriteLine(item.Nome);
                 Console.WriteLine(item.PrecoUnitario);
                 Console.WriteLine(item.Categoria + "\n");
-               
+
             }
 
             Console.ReadLine();
             return p;
-           
+
         }
 
         //exemplo de utilização do ADO.NET para Deletar dados na tabela  
         private static void DeletarUsandoAdoNet()
         {
-          
+
 
             Produto p = new Produto();
             p.Id = 1;
-            
+
 
             using (var repo = new ProdutoDAO())
             {
@@ -280,7 +281,7 @@ namespace Loja
                     Categoria = "Livros",
                     PrecoUnitario = 40.80,
                 };
-            
+
                 contexto.Produtos.Add(p2);
 
                 exibeEntries(contexto.ChangeTracker.Entries());//exibindo os estados 
@@ -355,9 +356,9 @@ namespace Loja
         #region Cadastrando produtos em promoções  - Relacionamento de muitos para muitos
         private static void cadastrandoPromocoes()
         {
-            var produto4 = new Produto() { Nome = "Panettone", Categoria = "alimentos", PrecoUnitario = 15.00, Unidade = "caixa"};
-            var produto5 = new Produto() { Nome = "Uvas", Categoria = "alimentos", PrecoUnitario = 9.00, Unidade = "gramas" }; 
-            var produto6 = new Produto() { Nome = "Pernil", Categoria = "alimentos", PrecoUnitario = 70.00, Unidade = "gramas" }; 
+            var produto4 = new Produto() { Nome = "Panettone", Categoria = "alimentos", PrecoUnitario = 15.00, Unidade = "caixa" };
+            var produto5 = new Produto() { Nome = "Uvas", Categoria = "alimentos", PrecoUnitario = 9.00, Unidade = "gramas" };
+            var produto6 = new Produto() { Nome = "Pernil", Categoria = "alimentos", PrecoUnitario = 70.00, Unidade = "gramas" };
 
             //criando promoção e adicionando os produtos nessa promoção 
 
@@ -412,7 +413,7 @@ namespace Loja
         #region Cadastrando Clinetes e endereço de entrega - Relacionamento de um para um
         private static void cadastrandoClienteEndereco()
         {
-
+            //criando cliente já adicionando um endereço. Como não definimos uma propriedade DbSet para Endereco, só podemos definir um endereço através de cliente 
             var cliente1 = new Cliente();
             cliente1.Nome = "Cliente1";
             cliente1.EnderecoDeEntrega = new Endereco()
@@ -438,15 +439,80 @@ namespace Loja
 
                 contexto.Clientes.Add(cliente1);
 
-               
+
                 exibeEntries(contexto.ChangeTracker.Entries());
 
-                //contexto.SaveChanges();
+                contexto.SaveChanges();
 
                 Console.ReadLine();
             }
         }
 
+        #endregion
+
+        #region Consultas avançadas com entity
+        private static void adicionandoProdutosEspecificos()
+        {
+            using (var contexto = new LojaContext())
+            {
+                #region log para visualizar os comandos realizados pelo entity framework
+
+                var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create()); //no loggerFactory será colocado um log especifico do entity e vai colocá-lo aqui 
+
+                #endregion
+
+                //Criando promoção e adicionando produtos especifico da tabela nessa prmoção
+                var promocao = new Promocao();
+                promocao.Descricao = "Promoção Livos"; ;
+                promocao.DataInicio = new DateTime(2022, 1, 1);
+                promocao.DataTermino = new DateTime(2022, 1, 1);
+
+                //consultando os produtos que serão adicionados na promoção
+                var produtos = contexto.Produtos.Where(p => p.Categoria == "Livros").ToList();
+
+                //iterando a lista acima para adicionar os produtos na tabela de produção
+                foreach (var item in produtos)
+                {
+                    promocao.IncluiProduto(item);
+                }
+
+                //adicionando a promoção no contexto
+                contexto.Promocoes.Add(promocao);
+
+                exibeEntries(contexto.ChangeTracker.Entries());
+
+                //contexto.SaveChanges();
+
+
+            }
+        }
+        private static void realizandoConsultaDeEntidadesRelacionadas()
+            {
+                //Consultando os produtos de uma promoção
+                //Por questões de performance,ferramentas de ORM geralemnete não retornam entidades relacionadas juntos com um select realizado 
+                //Para realizar esse tipo de consulta é necessário realizar um select com join
+                using (var contexto2 = new LojaContext())
+                {
+
+                    var promocao = contexto2.Promocoes.Include(p => p.Produtos).ThenInclude(pp => pp.Produto).Where(ppp => ppp.Id == 1002).FirstOrDefault(); // o include indica um join, onde explicitamos qual será a tabela relacionada 
+                                                                                                               // nesse caso utilizamos o relacionamento entre Produtos e promoção (propriedade Produtos na tabela promoção
+                                                                                                               // que retorna uma lista de PromocaoProduto) e mais um relacionamento, descendo um nível para incluir a tabela 
+                                                                                                               //de produtos através da propriedade Produto na tabela PromocaoProduto. Sendo assim estabelecemos um join entre
+                                                                                                               //Promoção e produto utlizanso a tabela PromocaoProduto.
+
+                 
+
+                Console.WriteLine("\n ========== Produtos da Promoção ==========");
+                    foreach (var item in promocao.Produtos)
+                    {
+                        Console.WriteLine(item.Produto);
+                    }
+
+                    Console.ReadLine();
+                }
+            }
         #endregion
 
         private static void exibeEntries(IEnumerable<EntityEntry> entries)
