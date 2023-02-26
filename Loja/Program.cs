@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Loja.Migrations;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,12 +29,15 @@ namespace Loja
 
             //exemploChangeTracker();
 
-            compraDeProdutos();
+            //compraDeProdutos();
+
+            cadastrandoPromocoes();
 
 
 
 
         }
+
 
         #region Métodos no Entity framework
 
@@ -351,6 +355,47 @@ namespace Loja
             }
         }
         #endregion
+
+        #region Cadastrando produtos em promoções 
+        private static void cadastrandoPromocoes()
+        {
+            //criando promoção e adicionando os produtos nessa promoção 
+
+            var promocaoDeNatal = new Promocao();
+            promocaoDeNatal.Descricao = "Natal 2023";
+            promocaoDeNatal.DataInicio = DateTime.Now;
+            promocaoDeNatal.DataTermino = DateTime.Now.AddDays(30);
+            //promocaoDeNatal.Produtos.Add(new Produto());
+            //promocaoDeNatal.Produtos.Add(new Produto());
+            //promocaoDeNatal.Produtos.Add(new Produto());
+
+
+
+
+            using (var contexto = new LojaContext())
+            {
+                #region log para visualizar os comandos realizados pelo entity framework
+
+                var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create()); //no loggerFactory será colocado um log especifico do entity e vai colocá-lo aqui 
+
+                #endregion
+
+
+
+                contexto.Promocoes.Add(promocaoDeNatal);
+
+                //utilizando o método exibeEntries podemos vizualizar os estados dos dois objetos que serão adicionado, 
+                exibeEntries(contexto.ChangeTracker.Entries());
+
+                contexto.SaveChanges();
+                Console.ReadLine();
+            }
+
+        }
+        #endregion
+
         private static void exibeEntries(IEnumerable<EntityEntry> entries)
         {
             Console.WriteLine("\n======= Entries =======");

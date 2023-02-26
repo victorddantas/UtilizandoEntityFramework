@@ -185,11 +185,17 @@
     <Compile Include="Migrations\20230225223620_Compra.designer.cs">
       <DependentUpon>20230225223620_Compra.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20230226024210_Promocao.cs" />
+    <Compile Include="Migrations\20230226024210_Promocao.designer.cs">
+      <DependentUpon>20230226024210_Promocao.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\LojaContextModelSnapshot.cs" />
+    <Compile Include="PromocaoProduto.cs" />
     <Compile Include="Produto.cs" />
     <Compile Include="ProdutoDAO.cs" />
     <Compile Include="ProdutoDAOEntity.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Promocao.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlLoggerProvider.cs" />
   </ItemGroup>
