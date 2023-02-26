@@ -28,12 +28,13 @@ namespace Loja
 
             //exemploChangeTracker();
 
+            compraDeProdutos();
 
 
 
 
         }
-     
+
         #region Métodos no Entity framework
 
         //exemplo de utilização do Entity para Listar dados na tabela  
@@ -307,6 +308,49 @@ namespace Loja
 
         }
 
+        #endregion
+
+        #region Realizando compras com os produtos da loja 
+        private static void compraDeProdutos()
+        {
+
+            //Criando o produto que será comprado 
+            //Nesse caso não foi utilizado um produto já contido no banco, nesse caso o entity consegue controlar isso, e faz adição tando do produto na tabela produto quanto
+            //da compra na tabela de compra, respeitando o relacionamento pelo ID
+            var livro = new Produto();
+            livro.Nome = "Sobre a brevidade da Vida";
+            livro.Categoria = "Livro";
+            livro.Unidade = "Unidade";
+            livro.PrecoUnitario = 25.50;
+
+            //instaciando a classe compra para efetuar a compra do produto
+            var compra = new Compra();
+            compra.Quantidade = 6;
+            compra.Produto = livro; //fazendo referência ao produto libro que será adicionado
+            compra.Preco = livro.PrecoUnitario * compra.Quantidade;
+
+            //instanciando o contexto para utilizar o método add para adicionar uma nova compra
+
+            using (var contexto = new LojaContext())
+            {
+                #region log para visualizar os comandos realizados pelo entity framework
+
+                var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create()); //no loggerFactory será colocado um log especifico do entity e vai colocá-lo aqui 
+
+                #endregion
+
+                contexto.Compras.Add(compra);
+
+                //utilizando o método exibeEntries podemos vizualizar os estados dos dois objetos que serão adicionado, 
+                exibeEntries(contexto.ChangeTracker.Entries());
+
+                contexto.SaveChanges();
+                Console.ReadLine();
+            }
+        }
+        #endregion
         private static void exibeEntries(IEnumerable<EntityEntry> entries)
         {
             Console.WriteLine("\n======= Entries =======");
@@ -317,8 +361,6 @@ namespace Loja
             }
         }
 
-
-        #endregion
     }
 }
 

@@ -170,6 +170,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compra.cs" />
     <Compile Include="IProdutoDAO.cs" />
     <Compile Include="LojaContext.cs" />
     <Compile Include="Migrations\20230225210251_Inicial.cs" />
@@ -179,6 +180,10 @@
     <Compile Include="Migrations\20230225210709_Unidade.cs" />
     <Compile Include="Migrations\20230225210709_Unidade.designer.cs">
       <DependentUpon>20230225210709_Unidade.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20230225223620_Compra.cs" />
+    <Compile Include="Migrations\20230225223620_Compra.designer.cs">
+      <DependentUpon>20230225223620_Compra.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\LojaContextModelSnapshot.cs" />
     <Compile Include="Produto.cs" />

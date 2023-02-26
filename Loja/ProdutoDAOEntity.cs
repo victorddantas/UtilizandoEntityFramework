@@ -11,7 +11,7 @@ namespace Loja
     {
         //através do context fazemos acesso ao objeto Produto utilizando a abordagem do entity framework, 
 
-        private LojaContext contexto; //criando campo para representar o contexto do entity para utilizar o método do entity 
+        private LojaContext contexto; //criando campo para representar o contexto do entity para utilizar os métodos do entity 
 
         public ProdutoDAOEntity()
         {

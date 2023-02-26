@@ -12,14 +12,14 @@ namespace Loja
         public string Nome { get; internal set; }
         public string Categoria { get; internal set; }
 
-        ////Essas duas propriedades abaixo foram alteradas e criadas após a criação do banco. Para atualizar sem a necessidade de se manipualar
+        ////Essas duas propriedades abaixo foram alteradas e criadas após a criação do banco. Para atualizar sem a necessidade de se manipular
         ////diretamente o banco (alter table), podemos utilizar o migrations, para sincronizar os dados entre o banco e a aplicação (objetos) . Essa funcionalidade 
         ////está contida no pacote Microsoft.EntityFrameworkCore.Tools. 
         ////Essa sincronizaão é feita através de duas etapas, através de comandos. Primeiro é feito adicionar a migração, criando assim uma nova versão para
         ////ser sincronozada com o banco (add-migration), depois é executado ou com um script criado previamente (script-migration), ou com o update-database
         ////executando diretamente a partir da versão mais recente criada. 
-        ////Após isso é criada a pasta Migrations contendo a classes de migrações. A classe que possue o nome da migração que foi criada, emseu nome possue
-        ////o nome e data de sua criação, e dentro dessa classe há dois métodos, uma para subir a nova versão e outro para retornar para uma versão anterior.
+        ////Após isso é criada a pasta Migrations contendo a classes de migrações. A classe que possue o nome da migração que foi criada, em seu nome possue
+        ////o nome dado a migração e data de sua criação, e dentro dessa classe há dois métodos, um para subir a nova versão e outro para retornar para uma versão anterior.
         ////Essa classe herda da classe Migration, que fornece uma API para executar a sincronização).
         ////Primeiro é necessário criar a migração inicial, como forma de versionar o estado atual da aplicação em relação ao banco de dados, após
         ////isso se cria a migração com as atualizações.
