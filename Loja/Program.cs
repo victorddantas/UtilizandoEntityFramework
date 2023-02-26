@@ -359,15 +359,19 @@ namespace Loja
         #region Cadastrando produtos em promoções 
         private static void cadastrandoPromocoes()
         {
+            var produto4 = new Produto() { Nome = "Panettone", Categoria = "alimentos", PrecoUnitario = 15.00, Unidade = "caixa"};
+            var produto5 = new Produto() { Nome = "Uvas", Categoria = "alimentos", PrecoUnitario = 9.00, Unidade = "gramas" }; 
+            var produto6 = new Produto() { Nome = "Pernil", Categoria = "alimentos", PrecoUnitario = 70.00, Unidade = "gramas" }; 
+
             //criando promoção e adicionando os produtos nessa promoção 
 
             var promocaoDeNatal = new Promocao();
-            promocaoDeNatal.Descricao = "Natal 2023";
+            promocaoDeNatal.Descricao = "Natal 2022";
             promocaoDeNatal.DataInicio = DateTime.Now;
             promocaoDeNatal.DataTermino = DateTime.Now.AddDays(30);
-            //promocaoDeNatal.Produtos.Add(new Produto());
-            //promocaoDeNatal.Produtos.Add(new Produto());
-            //promocaoDeNatal.Produtos.Add(new Produto());
+            promocaoDeNatal.IncluiProduto(produto4);
+            promocaoDeNatal.IncluiProduto(produto5);
+            promocaoDeNatal.IncluiProduto(produto6);
 
 
 
@@ -389,7 +393,20 @@ namespace Loja
                 //utilizando o método exibeEntries podemos vizualizar os estados dos dois objetos que serão adicionado, 
                 exibeEntries(contexto.ChangeTracker.Entries());
 
-                contexto.SaveChanges();
+                //contexto.SaveChanges();
+
+
+                //Para caso de uma exclusão de uma promoção, o entity no arquivo de migração, define que uma exclusão deve ser realizada em cascata, ou seja, tanto as promoções
+                //quanto os dados da tabela de relação PromocaoProdutos serão excluídas considerando a relação pelo Id's.A tabela de join foi criada com uma chave estrangeira para a
+                //tabela de promoção, e nessa chave foi definido o trigger OnDeleteCascade. Quando a promoção foi excluída, os registros relacionados foram excluídos em cascata.
+
+                var promocao = contexto.Promocoes.Find(2);
+                contexto.Promocoes.Remove(promocao);
+
+                exibeEntries(contexto.ChangeTracker.Entries());
+
+                //contexto.SaveChanges();
+
                 Console.ReadLine();
             }
 
