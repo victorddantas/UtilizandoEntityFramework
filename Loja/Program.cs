@@ -28,17 +28,13 @@ namespace Loja
             //AtualizarUsandoEntity();
 
             //exemploChangeTracker();
-
             //compraDeProdutos();
-
-            cadastrandoPromocoes();
-
-
-
+            //cadastrandoPromocoes();
+            cadastrandoClienteEndereco();
 
         }
 
-
+       
         #region Métodos no Entity framework
 
         //exemplo de utilização do Entity para Listar dados na tabela  
@@ -314,7 +310,7 @@ namespace Loja
 
         #endregion
 
-        #region Realizando compras com os produtos da loja 
+        #region Realizando compras com os produtos da loja - Relacionamento de Um para muitos 
         private static void compraDeProdutos()
         {
 
@@ -356,7 +352,7 @@ namespace Loja
         }
         #endregion
 
-        #region Cadastrando produtos em promoções 
+        #region Cadastrando produtos em promoções  - Relacionamento de muitos para muitos
         private static void cadastrandoPromocoes()
         {
             var produto4 = new Produto() { Nome = "Panettone", Categoria = "alimentos", PrecoUnitario = 15.00, Unidade = "caixa"};
@@ -411,6 +407,46 @@ namespace Loja
             }
 
         }
+        #endregion
+
+        #region Cadastrando Clinetes e endereço de entrega - Relacionamento de um para um
+        private static void cadastrandoClienteEndereco()
+        {
+
+            var cliente1 = new Cliente();
+            cliente1.Nome = "Cliente1";
+            cliente1.EnderecoDeEntrega = new Endereco()
+            {
+                Numero = 12,
+                Logradouro = "Rua 1",
+                Complemento = "Ap 205",
+                Bairro = "Jardim 1",
+                Cidade = "Cidade 1"
+
+            };
+
+
+            using (var contexto = new LojaContext())
+            {
+                #region log para visualizar os comandos realizados pelo entity framework
+
+                var serviceProvider = contexto.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create()); //no loggerFactory será colocado um log especifico do entity e vai colocá-lo aqui 
+
+                #endregion
+
+                contexto.Clientes.Add(cliente1);
+
+               
+                exibeEntries(contexto.ChangeTracker.Entries());
+
+                //contexto.SaveChanges();
+
+                Console.ReadLine();
+            }
+        }
+
         #endregion
 
         private static void exibeEntries(IEnumerable<EntityEntry> entries)
