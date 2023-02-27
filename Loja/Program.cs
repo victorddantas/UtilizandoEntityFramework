@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -319,10 +320,10 @@ namespace Loja
             //Nesse caso não foi utilizado um produto já contido no banco, nesse caso o entity consegue controlar isso, e faz adição tando do produto na tabela produto quanto
             //da compra na tabela de compra, respeitando o relacionamento pelo ID
             var livro = new Produto();
-            livro.Nome = "Sobre a brevidade da Vida";
-            livro.Categoria = "Livro";
+            livro.Nome = "Alface";
+            livro.Categoria = "Alimento";
             livro.Unidade = "Unidade";
-            livro.PrecoUnitario = 25.50;
+            livro.PrecoUnitario = 2.20;
 
             //instaciando a classe compra para efetuar a compra do produto
             var compra = new Compra();
@@ -410,7 +411,7 @@ namespace Loja
         }
         #endregion
 
-        #region Cadastrando Clinetes e endereço de entrega - Relacionamento de um para um
+        #region Cadastrando Clientes e endereço de entrega - Relacionamento de um para um
         private static void cadastrandoClienteEndereco()
         {
             //criando cliente já adicionando um endereço. Como não definimos uma propriedade DbSet para Endereco, só podemos definir um endereço através de cliente 
@@ -490,13 +491,23 @@ namespace Loja
         }
         private static void realizandoConsultaDeEntidadesRelacionadas()
             {
-                //Consultando os produtos de uma promoção
+           
+                using (var contexto2 = new LojaContext())
+                 {
+
+                #region log para visualizar os comandos realizados pelo entity framework
+
+                var serviceProvider = contexto2.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+                loggerFactory.AddProvider(SqlLoggerProvider.Create()); //no loggerFactory será colocado um log especifico do entity e vai colocá-lo aqui 
+
+                #endregion
+
+                //Consultando os produtos de uma promoção - Relação de muitos para muitos 
                 //Por questões de performance,ferramentas de ORM geralemnete não retornam entidades relacionadas juntos com um select realizado 
                 //Para realizar esse tipo de consulta é necessário realizar um select com join
-                using (var contexto2 = new LojaContext())
-                {
 
-                    var promocao = contexto2.Promocoes.Include(p => p.Produtos).ThenInclude(pp => pp.Produto).Where(ppp => ppp.Id == 1002).FirstOrDefault(); // o include indica um join, onde explicitamos qual será a tabela relacionada 
+                var promocao = contexto2.Promocoes.Include(p => p.Produtos).ThenInclude(pp => pp.Produto).Where(ppp => ppp.Id == 1002).FirstOrDefault(); // o include indica um join, onde explicitamos qual será a tabela relacionada 
                                                                                                                // nesse caso utilizamos o relacionamento entre Produtos e promoção (propriedade Produtos na tabela promoção
                                                                                                                // que retorna uma lista de PromocaoProduto) e mais um relacionamento, descendo um nível para incluir a tabela 
                                                                                                                //de produtos através da propriedade Produto na tabela PromocaoProduto. Sendo assim estabelecemos um join entre
@@ -510,9 +521,46 @@ namespace Loja
                         Console.WriteLine(item.Produto);
                     }
 
-                    Console.ReadLine();
+                //Consultando os endereços de um cliente - Relação de um para um
+
+
+                var cliente = contexto2.Clientes.Include(c => c.EnderecoDeEntrega).Where(cc => cc.Id == 1).FirstOrDefault(); ;
+
+                Console.WriteLine($"O endereço do cliente é: {cliente.EnderecoDeEntrega.Logradouro}");
+
+
+
+                //Consultando as compras de um produto - Relação de um para muitos. (Nesse caso foi necessário criar uma  propriedade do tipo compras em produtos para referênciar as compras em produtos)
+
+                var produto = contexto2.Produtos.Include(p => p.Compras).Where(pp => pp.Id == 2002).FirstOrDefault();
+
+                foreach (var item in produto.Compras)
+                {
+                    Console.WriteLine($"As compras do produto da categoria: {produto.Categoria} -- {produto.Nome} foram: {item.Quantidade}.");
                 }
+
+                //Consultando as compras de um produto utilizando o where para filtrar pelo valor das compras
+                //Nesse caso não é possível fazer where pois estamos realizando uma consulta em Poduto não em compra 
+                //Nesse caso teremos que fazer um segundo select filtrando as compras do produto consultado
+
+
+                //Primeira consulta
+                var produto2 = contexto2.Produtos.Where(pp => pp.Id == 4002).FirstOrDefault(); 
+
+                //Segunda consulta 
+                contexto2.Entry(produto2).Collection(p => p.Compras).Query().Where(c => c.Preco < 15).Load(); //na entry que está na referência "produto", através da coleção representada na propriedade
+                                                                                                      //compras executamos uma consulta com a condição where e depois carregar a query para referência
+                                                                                                      //"produto", para que sejá filtrado os produtos.
+
+                foreach (var item in produto2.Compras)
+                {
+                    Console.WriteLine($"As compras do produto da categoria: {produto2.Categoria} -- {produto2.Nome} foram: {item.Quantidade}.");
+                }
+
+                Console.ReadLine();
+
             }
+        }
         #endregion
 
         private static void exibeEntries(IEnumerable<EntityEntry> entries)

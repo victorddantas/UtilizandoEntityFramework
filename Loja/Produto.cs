@@ -33,11 +33,11 @@ namespace Loja
         public string Unidade { get; internal set; }
 
         public List<PromocaoProduto> Produtos { get; internal set; } // Uma promoção contém vários produtos e uma promoção contém vários produtos, o que contituí uma relação de muitos para muitos
-                                                             // Nesse caso é necessário criar como referência uma propriedade em todas as classes relacionadas. Nesse tipo de relacionamento
-                                                             // é  necessário criar uma tabela join para criar uma referência entre as tabela promocao e Produto (PromocaoProduto).
+                                                                     // Nesse caso é necessário criar como referência uma propriedade em todas as classes relacionadas. Nesse tipo de relacionamento
+                                                                     // é  necessário criar uma tabela join para criar uma referência entre as tabela promocao e Produto (PromocaoProduto).
 
 
-
+        public List<Compra> Compras { get; set; }
 
         //sobrescrevendo o método ToString para ele exibir o dado contido na instacia de produto (nesse caso o nome).
         public override string ToString()
